@@ -1471,18 +1471,18 @@ object(self)
 	    length < 0L || length > 1073741824L ->
 	    raise (Unix.Unix_error(Unix.ENOMEM, "Too large in mmap", ""))
 	| (0L, _, 0x3 (* PROT_READ|PROT_WRITE *),
-	   0x22 (* MAP_PRIVATE|MAP_ANONYMOUS *), -1) ->
+	   0x22 (* MAP_PRIVATE|MAP_ANONYMOUS *), _) ->
 	    let fresh = self#fresh_addr length in
 	      zero_region fresh (Int64.to_int length);
 	      fresh
 	| (0L, _, 0x0 (* PROT_NONE *),
 	   0x4022 (* MAP_NORESERVE|MAP_PRIVATE|MAP_ANONYMOUS *),
-	   -1) ->
+	   _) ->
 	    let fresh = self#fresh_addr length in
 	      zero_region fresh (Int64.to_int length);
 	      fresh	    
 	| (_, _, (0x3|0x7) (* PROT_READ|PROT_WRITE|PROT_EXEC) *),
-	   0x32 (* MAP_PRIVATE|FIXED|ANONYMOUS *), -1) ->
+	   0x32 (* MAP_PRIVATE|FIXED|ANONYMOUS *), _) ->
 	    zero_region addr (Int64.to_int length);
 	    addr
 	| (0L, _, 
@@ -1497,7 +1497,9 @@ object(self)
 	| (_, _, (0x3|0x7) (* PROT_READ|PROT_WRITE|PROT_EXEC *),
 	   0x812 (* MAP_DENYWRITE|PRIVATE|FIXED *), _) ->
 	    do_read addr
-	| _ -> failwith "Unhandled mmap operation"
+	| _ ->
+          Printf.ksprintf failwith "Unhandled mmap operation (addr = 0x%Lx, length = 0x%Lx, prot = 0x%x, flags = 0x%x, fd = %d)"
+            addr length prot flags fd
     in
       put_return ret
 
