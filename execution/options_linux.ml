@@ -158,6 +158,7 @@ let apply_linux_cmdline_opts (fm : Fragment_machine.fragment_machine) =
 	fm#add_special_handler (csh :> Fragment_machine.special_handler)      
     else if !opt_linux_syscalls then
       let lsh = new Linux_syscalls.linux_special_handler fm in
+	  lsh#enablePointerManagementMemoryChecking;
 	if !opt_use_ids_from_core then
 	  lsh#set_proc_identities !Linux_loader.proc_identities;
 	List.iter (fun f -> lsh#add_symbolic_file f false) !opt_symbolic_files;

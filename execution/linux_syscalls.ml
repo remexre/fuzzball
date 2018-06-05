@@ -282,6 +282,11 @@ object(self)
 	(Int64.add next_fresh_addr 0x0fffL); (* page align *)
       ret
 
+  val pm = new Pointer_management.pointer_management
+
+  method enablePointerManagementMemoryChecking =
+    fm#set_pointer_management pm
+
   val the_break = ref None
 
   val mutable saved_next_fresh_addr = 0L
@@ -1455,6 +1460,7 @@ object(self)
     compare_fds !netlink_sim_sockfd fd
       Unix.ENOSYS "mmap(2) for netlink socket fd not implemented";
     let offset_i = Int64.to_int offset in
+    pm#add_alloc addr length;
     let do_read addr = 
       let len = Int64.to_int length in
       let fd_oc = self#get_fd fd in

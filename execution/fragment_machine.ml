@@ -1949,7 +1949,12 @@ struct
 	    (try 
 	       V.VarHash.find temps var
 	     with
-	       | Not_found -> V.pp_var print_string var; 
+	       | Not_found ->
+           Printf.eprintf "--- `%s' ---\n" (V.var_to_string var);
+           V.VarHash.iter (fun k v -> begin
+               Printf.eprintf "  %s -> %s\n" (V.var_to_string k) "TODO";
+           end) temps;
+           Printf.eprintf "--- ---\n";
 		   failwith "Unknown variable")
 
     method get_bit_var_d   reg = self#get_int_var (Hashtbl.find reg_to_var reg)

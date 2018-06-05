@@ -95,4 +95,10 @@ let main argv =
     Logger_config.close_all_channels ()
 ;;
 
-main Sys.argv;;
+try
+  main Sys.argv
+with
+| Exec_exceptions.NotConcrete(exp) ->
+    Printexc.print_backtrace stderr;
+    failwith ("NotConcrete(" ^ Vine.exp_to_string exp ^ ")")
+;;

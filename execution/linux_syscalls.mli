@@ -174,4 +174,5 @@ object
   method sys_write : int -> char array -> int -> unit
   method sys_writev : int -> int64 -> int -> unit
   method state_json : Yojson.Safe.json option
+  method enablePointerManagementMemoryChecking : unit
 end

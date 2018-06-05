@@ -10,13 +10,13 @@ let json_addr i64 = `String (Printf.sprintf "0x%08Lx" i64)
 class pointer_management = object(self)
 
 (* This is where addresses start being handed out from in cgc_syscalls (1342177280)*)
-  val heap_start = 0x50000000L
+  val heap_start = 0x08040000L
 (* The heap grows dynamically, but here's a reasonable bound: *)
-  val heap_end = 0x60000001L
+  val heap_end = 0x18040000L
 (* This is where the stack is supposed to start in Decree
    (the high address, because it grows down) *)
-  val stack_start = 0xbaaab000L
-  val mutable stack_end = 0xbaaab000L
+  val stack_start = 0xc0000000L
+  val mutable stack_end = 0xc0000000L
 
   (* Conservative bounds on the area of the address space that holds the
      code and data loaded from the binary. In the future we should probably
